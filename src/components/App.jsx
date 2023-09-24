@@ -23,16 +23,19 @@ export class App extends Component {
     }
     
 async componentDidUpdate(prevProps, prevState) {
-  if (prevState.inputValue !== this.state.inputValue) {
+  if (prevState.inputValue !== this.state.inputValue && this.state.inputValue) {
+    // console.log('prevState.inputValue', prevState.inputValue)
+    // console.log('this.state.inputValue', this.state.inputValue)
     try{
-       this.setState({ isLoading: true, page: 1, images: [], });
-      const { data } = await pixabayAPI(this.state.inputValue, this.state.page);
+      await this.setState({isLoading: true, page: 1, images: [], })
+      //  console.log(this.state.page)
+        const { data } = await pixabayAPI(this.state.inputValue, this.state.page);
       this.setState({
         page: 1,
           images: data.hits,
           totalHits: data.total,
       })
-      
+      console.log(data)
       if( data.totalHits > this.state.per_page){
       this.setState({ isLoadMore: true })
     }else{
@@ -45,8 +48,7 @@ async componentDidUpdate(prevProps, prevState) {
       this.setState({ isLoading: false });
     }
   }
-  console.log('prevState', prevState)
-  if(prevState.page < this.state.page) {
+    if(prevState.page < this.state.page) {
     const { data } = await pixabayAPI(this.state.inputValue, this.state.page);
 
     if(prevState.inputValue !== this.state.inputValue) {
@@ -84,7 +86,7 @@ handleKeyEsc = (e) => {
 }
   render() {
     const {isLoading, images, totalHits, largeImage, modalIsOpen} = this.state
-    console.log(images.length)
+    
     return (
       <>
       <Searchbar onSubmit={this.handleSearchForm}/>
